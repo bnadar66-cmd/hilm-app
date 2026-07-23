@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { colors, fonts, radius } from '../theme/theme';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -47,9 +48,11 @@ export default function CourseDetailScreen({ route, navigation }) {
     setLoading(false);
   }, [pathId, profile?.id]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   async function handleEnroll() {
     if (!profile?.id || !path) return;
@@ -163,7 +166,11 @@ export default function CourseDetailScreen({ route, navigation }) {
           {lectures.map((lecture, i) => {
             const isDone = completedIds.includes(lecture.id);
             return (
-              <View key={lecture.id} style={[styles.lectureRow, i === lectures.length - 1 && { borderBottomWidth: 0 }]}>
+              <Pressable
+                key={lecture.id}
+                style={[styles.lectureRow, i === lectures.length - 1 && { borderBottomWidth: 0 }]}
+                onPress={() => navigation.navigate('Lecture', { lectureId: lecture.id, pathId })}
+              >
                 <View style={[styles.lectureCheck, isDone && styles.lectureCheckDone]}>
                   {isDone && <Text style={styles.lectureCheckTxt}>✓</Text>}
                 </View>
@@ -174,7 +181,7 @@ export default function CourseDetailScreen({ route, navigation }) {
                   )}
                 </View>
                 <Text style={styles.lectureIndex}>{i + 1}</Text>
-              </View>
+              </Pressable>
             );
           })}
         </View>

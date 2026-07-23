@@ -8,6 +8,7 @@ import MyCoursesScreen from '../screens/MyCoursesScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
+import LectureScreen from '../screens/LectureScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +63,7 @@ export default function MainTabNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={Tabs} />
       <Stack.Screen name="CourseDetail" component={CourseDetailScreen} />
+      <Stack.Screen name="Lecture" component={LectureScreen} />
     </Stack.Navigator>
   );
 }

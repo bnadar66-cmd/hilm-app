@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { colors, fonts, radius } from '../theme/theme';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -8,20 +9,22 @@ export default function ProfileScreen() {
   const { profile, signOut } = useAuth();
   const [stats, setStats] = useState({ courses: 0, avgProgress: 0 });
 
-  useEffect(() => {
-    if (!profile?.id) return;
-    supabase
-      .from('enrollments')
-      .select('progress_percent')
-      .eq('student_id', profile.id)
-      .then(({ data }) => {
-        const rows = data || [];
-        const avg = rows.length
-          ? Math.round(rows.reduce((s, r) => s + (r.progress_percent || 0), 0) / rows.length)
-          : 0;
-        setStats({ courses: rows.length, avgProgress: avg });
-      });
-  }, [profile?.id]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!profile?.id) return;
+      supabase
+        .from('enrollments')
+        .select('progress_percent')
+        .eq('student_id', profile.id)
+        .then(({ data }) => {
+          const rows = data || [];
+          const avg = rows.length
+            ? Math.round(rows.reduce((s, r) => s + (r.progress_percent || 0), 0) / rows.length)
+            : 0;
+          setStats({ courses: rows.length, avgProgress: avg });
+        });
+    }, [profile?.id])
+  );
 
   return (
     <ScrollView style={styles.wrap} contentContainerStyle={{ paddingBottom: 40 }}>
