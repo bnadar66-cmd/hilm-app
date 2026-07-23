@@ -8,7 +8,7 @@ import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono';
 
 import { AuthProvider, useAuth } from './src/lib/AuthContext';
 import AuthNavigator from './src/navigation/AuthNavigator';
-import HomeScreen from './src/screens/HomeScreen';
+import MainTabNavigator from './src/navigation/MainTabNavigator';
 import { colors } from './src/theme/theme';
 
 function RootSwitch() {
@@ -22,7 +22,7 @@ function RootSwitch() {
     );
   }
 
-  return isLoggedIn ? <HomeScreen /> : <AuthNavigator />;
+  return isLoggedIn ? <MainTabNavigator /> : <AuthNavigator />;
 }
 
 export default function App() {
