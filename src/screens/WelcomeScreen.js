@@ -16,6 +16,10 @@ export default function WelcomeScreen({ navigation }) {
       <Pressable style={styles.ghostBtn} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.ghostBtnTxt}>تسجيل الدخول</Text>
       </Pressable>
+
+      <Pressable style={styles.staffLink} onPress={() => navigation.navigate('StaffLogin')}>
+        <Text style={styles.staffLinkTxt}>دخول الموظفين</Text>
+      </Pressable>
     </View>
   );
 }
@@ -40,4 +44,6 @@ const styles = StyleSheet.create({
     width: '100%', alignItems: 'center',
   },
   ghostBtnTxt: { fontFamily: fonts.bodyBold, color: colors.ink, fontSize: 15 },
+  staffLink: { marginTop: 22 },
+  staffLinkTxt: { fontFamily: fonts.body, color: colors.muted, fontSize: 12.5 },
 });

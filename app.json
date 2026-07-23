@@ -3,6 +3,7 @@
     "name": "حلم",
     "slug": "hilm-app",
     "version": "1.0.0",
+    "scheme": "hilmapp",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#141110",

@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [staffProfile, setStaffProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!session?.user?.id) {
       setProfile(null);
+      setStaffProfile(null);
       return;
     }
     supabase
@@ -32,13 +34,23 @@ export function AuthProvider({ children }) {
       .eq('id', session.user.id)
       .maybeSingle()
       .then(({ data }) => setProfile(data));
+
+    supabase
+      .from('admins')
+      .select('*')
+      .eq('id', session.user.id)
+      .maybeSingle()
+      .then(({ data }) => setStaffProfile(data));
   }, [session?.user?.id]);
 
   const value = {
     session,
     profile,
+    staffProfile,
     loading,
     isLoggedIn: !!session,
+    isStaff: !!staffProfile,
+    isAdmin: staffProfile?.role === 'admin',
     refreshProfile: async () => {
       if (!session?.user?.id) return;
       const { data } = await supabase
@@ -47,6 +59,15 @@ export function AuthProvider({ children }) {
         .eq('id', session.user.id)
         .maybeSingle();
       setProfile(data);
+    },
+    refreshStaffProfile: async () => {
+      if (!session?.user?.id) return;
+      const { data } = await supabase
+        .from('admins')
+        .select('*')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      setStaffProfile(data);
     },
     signOut: () => supabase.auth.signOut(),
   };
