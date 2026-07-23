@@ -10,6 +10,7 @@ import StaffProfileScreen from '../screens/StaffProfileScreen';
 import TeamManageScreen from '../screens/TeamManageScreen';
 import StaffCourseManageScreen from '../screens/StaffCourseManageScreen';
 import StaffLectureManageScreen from '../screens/StaffLectureManageScreen';
+import StudentDetailScreen from '../screens/StudentDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -66,6 +67,7 @@ export default function StaffNavigator() {
       <Stack.Screen name="StaffTabs" component={Tabs} />
       <Stack.Screen name="StaffCourseManage" component={StaffCourseManageScreen} />
       <Stack.Screen name="StaffLectureManage" component={StaffLectureManageScreen} />
+      <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
     </Stack.Navigator>
   );
 }

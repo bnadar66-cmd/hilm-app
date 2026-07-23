@@ -8,7 +8,13 @@ import MyCoursesScreen from '../screens/MyCoursesScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CourseDetailScreen from '../screens/CourseDetailScreen';
+import MyCourseDetailScreen from '../screens/MyCourseDetailScreen';
 import LectureScreen from '../screens/LectureScreen';
+import SubjectListScreen from '../screens/SubjectListScreen';
+import LessonsContentScreen from '../screens/LessonsContentScreen';
+import FilesContentScreen from '../screens/FilesContentScreen';
+import FlashCardsContentScreen from '../screens/FlashCardsContentScreen';
+import QuestionsContentScreen from '../screens/QuestionsContentScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,7 +69,13 @@ export default function MainTabNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={Tabs} />
       <Stack.Screen name="CourseDetail" component={CourseDetailScreen} />
+      <Stack.Screen name="MyCourseDetail" component={MyCourseDetailScreen} />
       <Stack.Screen name="Lecture" component={LectureScreen} />
+      <Stack.Screen name="SubjectList" component={SubjectListScreen} />
+      <Stack.Screen name="LessonsContent" component={LessonsContentScreen} />
+      <Stack.Screen name="FilesContent" component={FilesContentScreen} />
+      <Stack.Screen name="FlashCardsContent" component={FlashCardsContentScreen} />
+      <Stack.Screen name="QuestionsContent" component={QuestionsContentScreen} />
     </Stack.Navigator>
   );
 }

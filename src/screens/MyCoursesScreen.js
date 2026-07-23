@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts, radius } from '../theme/theme';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -9,6 +10,8 @@ export default function MyCoursesScreen() {
   const navigation = useNavigation();
   const { profile } = useAuth();
   const [rows, setRows] = useState([]);
+  const [lectures, setLectures] = useState([]);
+  const [completedIds, setCompletedIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -16,11 +19,27 @@ export default function MyCoursesScreen() {
     if (!profile?.id) return;
     const { data, error } = await supabase
       .from('enrollments')
-      .select('id, progress_percent, enrolled_at, path:paths(id, title, provider, university, duration)')
+      .select('id, progress_percent, status, enrolled_at, path:paths(id, title, provider, university)')
       .eq('student_id', profile.id)
       .order('enrolled_at', { ascending: false });
 
-    if (!error) setRows(data || []);
+    if (!error) {
+      const enrollRows = data || [];
+      setRows(enrollRows);
+
+      const pathIds = enrollRows.map((r) => r.path?.id).filter(Boolean);
+      if (pathIds.length) {
+        const [{ data: lecturesData }, { data: progressData }] = await Promise.all([
+          supabase.from('lectures').select('id, path_id').in('path_id', pathIds),
+          supabase.from('lecture_progress').select('lecture_id').eq('student_id', profile.id),
+        ]);
+        setLectures(lecturesData || []);
+        setCompletedIds((progressData || []).map((p) => p.lecture_id));
+      } else {
+        setLectures([]);
+        setCompletedIds([]);
+      }
+    }
     setLoading(false);
     setRefreshing(false);
   }, [profile?.id]);
@@ -35,9 +54,7 @@ export default function MyCoursesScreen() {
     <ScrollView
       style={styles.wrap}
       contentContainerStyle={{ paddingBottom: 40 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />
-      }
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.gold} />}
     >
       <Text style={styles.title}>دوراتي المسجّلة</Text>
 
@@ -46,32 +63,47 @@ export default function MyCoursesScreen() {
       ) : rows.length === 0 ? (
         <Text style={styles.emptyTxt}>ما سجّلت بأي مسار بعد. روح تبويب "استكشف" وسجّل بأول مسار لك 🎓</Text>
       ) : (
-        rows.map((row) => (
-          <Pressable
-            key={row.id}
-            style={styles.card}
-            onPress={() => navigation.navigate('CourseDetail', { pathId: row.path?.id })}
-          >
-            <View style={styles.cardImg}>
-              <Text style={styles.cardImgTxt}>{row.path?.title?.charAt(0) ?? '؟'}</Text>
-            </View>
-            <View style={styles.cardBody}>
-              <Text style={styles.cardTitle}>{row.path?.title}</Text>
-              <Text style={styles.cardTeacher}>{row.path?.provider} · {row.path?.university}</Text>
+        rows.map((row) => {
+          const pathId = row.path?.id;
+          const totalLectures = lectures.filter((l) => l.path_id === pathId).length;
+          const completedLectures = lectures.filter((l) => l.path_id === pathId && completedIds.includes(l.id)).length;
+          const remaining = totalLectures - completedLectures;
+          const teacherName = row.path?.provider;
 
-              <View style={styles.progressRow}>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressFill, { width: `${row.progress_percent}%` }]} />
+          return (
+            <Pressable
+              key={row.id}
+              style={styles.card}
+              onPress={() => navigation.navigate('MyCourseDetail', { pathId })}
+            >
+              <View style={styles.cardImg}>
+                <Ionicons name="school-outline" size={36} color={colors.gold} />
+              </View>
+              <View style={styles.cardBody}>
+                <Text style={styles.cardTitle}>{row.path?.title}</Text>
+                <Text style={styles.cardTeacher}>{teacherName} · {row.path?.university}</Text>
+
+                <View style={styles.progressRow}>
+                  <View style={styles.progressBar}>
+                    <View style={[styles.progressFill, { width: `${row.progress_percent}%` }]} />
+                  </View>
+                  <Text style={styles.progressPct}>{row.progress_percent}%</Text>
                 </View>
-                <Text style={styles.progressPct}>{row.progress_percent}%</Text>
-              </View>
 
-              <View style={styles.enterBtn}>
-                <Text style={styles.enterBtnTxt}>الدخول إلى الدورة</Text>
+                <View style={styles.statsRow}>
+                  <View style={styles.statChip}>
+                    <Ionicons name="checkmark-circle-outline" size={13} color={colors.gold} />
+                    <Text style={styles.statChipTxt}>{completedLectures} مكتملة</Text>
+                  </View>
+                  <View style={styles.statChip}>
+                    <Ionicons name="time-outline" size={13} color={colors.muted} />
+                    <Text style={styles.statChipTxt}>{remaining} متبقية</Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </Pressable>
-        ))
+            </Pressable>
+          );
+        })
       )}
     </ScrollView>
   );
@@ -89,7 +121,6 @@ const styles = StyleSheet.create({
     width: '100%', aspectRatio: 16 / 8, alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(242,183,5,0.10)', borderBottomWidth: 1, borderBottomColor: colors.line,
   },
-  cardImgTxt: { fontFamily: fonts.display, color: colors.gold, fontSize: 30 },
   cardBody: { padding: 14 },
   cardTitle: { fontFamily: fonts.bodyBold, color: colors.ink, fontSize: 15, textAlign: 'right', marginBottom: 4 },
   cardTeacher: { fontFamily: fonts.body, color: colors.muted, fontSize: 12, textAlign: 'right', marginBottom: 12 },
@@ -97,6 +128,7 @@ const styles = StyleSheet.create({
   progressBar: { flex: 1, height: 6, borderRadius: 6, backgroundColor: 'rgba(255,255,255,0.07)', overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: colors.gold, borderRadius: 6 },
   progressPct: { color: colors.muted, fontFamily: fonts.body, fontSize: 11.5 },
-  enterBtn: { backgroundColor: colors.gold, borderRadius: radius.sm, paddingVertical: 11, alignItems: 'center' },
-  enterBtnTxt: { color: colors.bg, fontFamily: fonts.bodyBold, fontSize: 13.5 },
+  statsRow: { flexDirection: 'row-reverse', gap: 10 },
+  statChip: { flexDirection: 'row-reverse', alignItems: 'center', gap: 4 },
+  statChipTxt: { color: colors.muted, fontFamily: fonts.body, fontSize: 11.5 },
 });
