@@ -3,11 +3,13 @@ import {
   View, Text, StyleSheet, Pressable, ScrollView,
   ActivityIndicator, Alert, RefreshControl,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, radius } from '../theme/theme';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
 
 export default function ExploreScreen() {
+  const navigation = useNavigation();
   const { profile } = useAuth();
   const [paths, setPaths] = useState([]);
   const [enrolledIds, setEnrolledIds] = useState([]);
@@ -76,7 +78,7 @@ export default function ExploreScreen() {
         paths.map((path) => {
           const isEnrolled = enrolledIds.includes(path.id);
           return (
-            <View key={path.id} style={styles.card}>
+            <Pressable key={path.id} style={styles.card} onPress={() => navigation.navigate('CourseDetail', { pathId: path.id })}>
               <View style={styles.cardImg}>
                 <Text style={styles.cardImgTxt}>{path.title?.charAt(0) ?? '؟'}</Text>
               </View>
@@ -110,7 +112,7 @@ export default function ExploreScreen() {
                   </Pressable>
                 )}
               </View>
-            </View>
+            </Pressable>
           );
         })
       )}

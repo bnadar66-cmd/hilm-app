@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { colors, fonts, radius } from '../theme/theme';
 import { useAuth } from '../lib/AuthContext';
 import { supabase } from '../lib/supabase';
 
 export default function MyCoursesScreen() {
+  const navigation = useNavigation();
   const { profile } = useAuth();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +45,11 @@ export default function MyCoursesScreen() {
         <Text style={styles.emptyTxt}>ما سجّلت بأي مسار بعد. روح تبويب "استكشف" وسجّل بأول مسار لك 🎓</Text>
       ) : (
         rows.map((row) => (
-          <View key={row.id} style={styles.card}>
+          <Pressable
+            key={row.id}
+            style={styles.card}
+            onPress={() => navigation.navigate('CourseDetail', { pathId: row.path?.id })}
+          >
             <View style={styles.cardImg}>
               <Text style={styles.cardImgTxt}>{row.path?.title?.charAt(0) ?? '؟'}</Text>
             </View>
@@ -58,11 +64,11 @@ export default function MyCoursesScreen() {
                 <Text style={styles.progressPct}>{row.progress_percent}%</Text>
               </View>
 
-              <Pressable style={styles.enterBtn}>
+              <View style={styles.enterBtn}>
                 <Text style={styles.enterBtnTxt}>الدخول إلى الدورة</Text>
-              </Pressable>
+              </View>
             </View>
-          </View>
+          </Pressable>
         ))
       )}
     </ScrollView>

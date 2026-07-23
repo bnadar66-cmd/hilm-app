@@ -1,13 +1,16 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts } from '../theme/theme';
 import HomeScreen from '../screens/HomeScreen';
 import MyCoursesScreen from '../screens/MyCoursesScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import CourseDetailScreen from '../screens/CourseDetailScreen';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const ICONS = {
   Home: 'home-outline',
@@ -23,7 +26,7 @@ const LABELS = {
   Profile: 'حسابي',
 };
 
-export default function MainTabNavigator() {
+function Tabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -51,5 +54,14 @@ export default function MainTabNavigator() {
       <Tab.Screen name="MyCourses" component={MyCoursesScreen} />
       <Tab.Screen name="Home" component={HomeScreen} />
     </Tab.Navigator>
+  );
+}
+
+export default function MainTabNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs" component={Tabs} />
+      <Stack.Screen name="CourseDetail" component={CourseDetailScreen} />
+    </Stack.Navigator>
   );
 }
