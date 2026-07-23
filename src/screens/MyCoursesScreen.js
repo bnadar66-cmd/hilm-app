@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
   wrap: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 22, paddingTop: 56 },
   title: { fontFamily: fonts.display, color: colors.ink, fontSize: 20, textAlign: 'right', marginBottom: 20 },
   emptyTxt: { color: colors.muted, fontFamily: fonts.body, fontSize: 13, textAlign: 'center', marginTop: 30, lineHeight: 22 },
-
   card: {
     borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, backgroundColor: colors.card,
     overflow: 'hidden', marginBottom: 16,
@@ -86,12 +85,10 @@ const styles = StyleSheet.create({
   cardBody: { padding: 14 },
   cardTitle: { fontFamily: fonts.bodyBold, color: colors.ink, fontSize: 15, textAlign: 'right', marginBottom: 4 },
   cardTeacher: { fontFamily: fonts.body, color: colors.muted, fontSize: 12, textAlign: 'right', marginBottom: 12 },
-
   progressRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, marginBottom: 12 },
   progressBar: { flex: 1, height: 6, borderRadius: 6, backgroundColor: 'rgba(255,255,255,0.07)', overflow: 'hidden' },
   progressFill: { height: '100%', backgroundColor: colors.gold, borderRadius: 6 },
   progressPct: { color: colors.muted, fontFamily: fonts.body, fontSize: 11.5 },
-
   enterBtn: { backgroundColor: colors.gold, borderRadius: radius.sm, paddingVertical: 11, alignItems: 'center' },
   enterBtnTxt: { color: colors.bg, fontFamily: fonts.bodyBold, fontSize: 13.5 },
 });

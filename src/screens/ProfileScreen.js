@@ -71,7 +71,6 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   wrap: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 22, paddingTop: 56 },
-
   head: { flexDirection: 'row-reverse', alignItems: 'center', gap: 14, marginBottom: 22 },
   avatar: {
     width: 58, height: 58, borderRadius: 29, backgroundColor: 'rgba(242,183,5,0.15)',
@@ -80,7 +79,6 @@ const styles = StyleSheet.create({
   avatarTxt: { fontFamily: fonts.display, color: colors.gold, fontSize: 24 },
   name: { fontFamily: fonts.bodyBold, color: colors.ink, fontSize: 16, textAlign: 'right', marginBottom: 4 },
   sub: { fontFamily: fonts.body, color: colors.muted, fontSize: 12.5, textAlign: 'right' },
-
   statsRow: { flexDirection: 'row-reverse', gap: 10, marginBottom: 26 },
   statBox: {
     flex: 1, borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, backgroundColor: colors.card,
@@ -88,7 +86,6 @@ const styles = StyleSheet.create({
   },
   statNum: { fontFamily: fonts.bodyBold, color: colors.gold, fontSize: 20, marginBottom: 4 },
   statLbl: { fontFamily: fonts.body, color: colors.muted, fontSize: 11.5 },
-
   sectionTitle: { fontFamily: fonts.mono, color: colors.gold, fontSize: 11, letterSpacing: 1, textAlign: 'right', marginBottom: 10 },
   rowsCard: {
     borderWidth: 1, borderColor: colors.line, borderRadius: radius.md, backgroundColor: colors.card,
