@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "حلم",
+    "slug": "hilm-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#141110",
+    "splash": {
+      "backgroundColor": "#141110"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hilmlearning.app"
+    },
+    "android": {
+      "package": "com.hilmlearning.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#141110"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE_WITH_YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
